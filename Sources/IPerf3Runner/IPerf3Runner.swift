@@ -97,8 +97,7 @@ private extension IPerf3Runner {
     return streams
   }
 
-  func handleCompletion(test: iperf_test) {
-    let stream = test.streams.slh_first.pointee
+  func handleCompletion(stream: iperf_stream) {
     let result = stream.result.pointee
     let bytes = allStreams(stream: stream)
       .reduce(into: 0) { (bytes, current) in bytes += getTotalBytes(stream: current) }
@@ -109,8 +108,10 @@ private extension IPerf3Runner {
   }
 
   func handleStatusCallback(test: iperf_test) {
-    guard test.done != 1 else { return handleCompletion(test: test) }
-    let stream = test.streams.slh_first.pointee
+    guard let stream = test.streams.slh_first?.pointee else { return }
+    if test.done == 1 {
+      return handleCompletion(stream: stream)
+    }
 
     let bytes = allStreams(stream: stream)
       .reduce(into: 0) { (bytes, current) in bytes += getLastIntervalBytes(stream: current) }
