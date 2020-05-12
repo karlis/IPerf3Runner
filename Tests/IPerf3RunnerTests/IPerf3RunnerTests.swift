@@ -3,7 +3,7 @@ import XCTest
 
 final class IPerf3RunnerTests: XCTestCase {
   func testExample() {
-    let configuration = IPerf3Runner.Configuration(hostname: "192.168.118.168", port: 5201, duration: 10, streams: 1, type: .download)
+    let configuration = IPerf3Runner.Configuration(hostname: "192.168.118.168", port: 5201, duration: 10, streams: 4, type: .download)
     guard let test = IPerf3Runner(configuration: configuration)
       else {
         XCTFail()
