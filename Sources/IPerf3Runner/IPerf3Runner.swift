@@ -77,8 +77,12 @@ private extension IPerf3Runner {
     return lastResult
   }
   
-  func getBytes(stream: iperf_stream?) -> Double {
-    return Double(getLastResult(stream: stream)?.bytes_transferred ?? 0)
+  func getLastIntervalBytes(stream: iperf_stream?) -> Double {
+    Double(getLastResult(stream: stream)?.bytes_transferred ?? 0)
+  }
+
+  func getTotalBytes(stream: iperf_stream?) -> Double {
+    Double(stream?.result.pointee.bytes_received ?? 0)
   }
 
   func allStreams(stream: iperf_stream?) -> [iperf_stream] {
@@ -94,11 +98,13 @@ private extension IPerf3Runner {
   }
 
   func handleCompletion(test: iperf_test) {
-    let result = test.streams.slh_first.pointee.result.pointee
-
+    let stream = test.streams.slh_first.pointee
+    let result = stream.result.pointee
+    let bytes = allStreams(stream: stream)
+      .reduce(into: 0) { (bytes, current) in bytes += getTotalBytes(stream: current) }
     let totalDuration = Double(result.end_time.secs - result.start_time.secs)
-    let bandwidth = Double(result.bytes_sent) / totalDuration * 8 / 1_000_000
 
+    let bandwidth = bytes / totalDuration * 8 / 1_000_000
     callback?(.completed(bandwidth))
   }
 
@@ -107,7 +113,7 @@ private extension IPerf3Runner {
     let stream = test.streams.slh_first.pointee
 
     let bytes = allStreams(stream: stream)
-      .reduce(into: 0) { (bytes, current) in bytes += getBytes(stream: current) }
+      .reduce(into: 0) { (bytes, current) in bytes += getLastIntervalBytes(stream: current) }
 
     if let interval_results = getLastResult(stream: stream) {
       let bandwith = (bytes / Double(interval_results.interval_duration)) * 8 / 1_000_000
