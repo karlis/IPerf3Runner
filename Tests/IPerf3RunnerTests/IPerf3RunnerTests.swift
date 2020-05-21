@@ -3,7 +3,13 @@ import XCTest
 
 final class IPerf3RunnerTests: XCTestCase {
   func testExample() {
-    let configuration = IPerf3Runner.Configuration(hostname: "192.168.118.168", port: 5201, duration: 8, streams: 4, type: .download)
+    let configuration = IPerf3Runner.Configuration(
+    hostname: "192.168.118.168",
+    port: 5201,
+    duration: 8,
+    streams: 4,
+    omit: 2,
+    type: .download)
     guard let test = IPerf3Runner(configuration: configuration)
       else {
         XCTFail()
@@ -24,7 +30,13 @@ final class IPerf3RunnerTests: XCTestCase {
     // There must be some way to notify we can start upload.
     // Starting right after download returns a refused connection "sometimes"
 
-    let upload = IPerf3Runner.Configuration(hostname: "192.168.118.168", port: 5201, duration: 8, streams: 4, type: .upload)
+    let upload = IPerf3Runner.Configuration(
+      hostname: "192.168.118.168",
+      port: 5201,
+      duration: 8,
+      streams: 4,
+      omit: 2,
+      type: .upload)
     let testUpload = IPerf3Runner(configuration: upload)
 
     let uploadExpectation = expectation(description: "Run test upload")

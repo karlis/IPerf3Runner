@@ -40,6 +40,7 @@ public class IPerf3Runner {
     iperf_set_test_server_port(test, Int32(configuration.port))
     iperf_set_test_duration(test, Int32(configuration.duration))
     iperf_set_test_template(test, streamFilePathTemplate.pointer)
+    iperf_set_test_omit(test, Int32(configuration.omit))
     test.pointee.settings.pointee.connect_timeout = 3000
   }
 
