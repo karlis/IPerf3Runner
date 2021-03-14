@@ -4,7 +4,7 @@ import XCTest
 final class IPerf3RunnerTests: XCTestCase {
   func testExample() {
     let configuration = IPerf3Runner.Configuration(
-    hostname: "192.168.118.168",
+    hostname: "192.168.195.168", // This is an IP where iperf3 server is running.
     port: 5201,
     duration: 8,
     streams: 4,
